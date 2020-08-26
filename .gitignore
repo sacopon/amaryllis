@@ -1,0 +1,14 @@
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# node
+node_modules/
+
+# build artifact
+/dist
+
+# log
+/log/
