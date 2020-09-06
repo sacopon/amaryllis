@@ -21,8 +21,8 @@ async function mainProgram() {
   disableTouchEvent(app.view);
   document.body.appendChild(app.view);
 
-  const touch_layer = new TouchInputLayer();
-  touch_layer.position.set(screen.center.x, screen.center.y);
+  const touchLayer = new TouchInputLayer();
+  touchLayer.position.set(screen.center.x, screen.center.y);
 
   let sprite: Sprite | null = null;
 
@@ -33,7 +33,7 @@ async function mainProgram() {
     sprite = Sprite.from("yusha4_down_0.png");
     sprite.x = screen.resolution.width - sprite.width;
     app.stage.addChild(sprite);
-    app.stage.addChild(touch_layer);
+    app.stage.addChild(touchLayer);
   });
 
   const g = new Graphics();
@@ -43,7 +43,7 @@ async function mainProgram() {
   app.stage.addChild(g);
 
   app.ticker.add(() => {
-    switch (touch_layer.getDirection()) {
+    switch (touchLayer.getDirection()) {
       case TouchInputLayer.Direction.UP:
         sprite!.position.y -= 8;
         break;

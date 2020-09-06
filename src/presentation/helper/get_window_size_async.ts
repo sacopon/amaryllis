@@ -3,9 +3,9 @@ export async function getWindowSizeAsync(): Promise<{
   height: number;
 }> {
   return new Promise((resolve) => {
-    const timer_id = window.setInterval(() => {
+    const timerId = window.setInterval(() => {
       if (!!window.innerWidth && !!window.innerHeight) {
-        window.clearInterval(timer_id);
+        window.clearInterval(timerId);
 
         resolve({
           width: window.innerWidth,
