@@ -4,7 +4,7 @@ export const screen = {
     height: 1280,
   },
   center: {
-    x: 640,
-    y: 360,
+    x: 360,
+    y: 640,
   },
 };
