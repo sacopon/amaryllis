@@ -1,9 +1,10 @@
-import { Application, Graphics, Sprite } from "pixi.js";
+import { Application } from "pixi.js";
 import { screen } from "presentation/application/config/configuration";
 import { disableTouchEvent, disableOuterCanvasTouchEvent } from "presentation/helper/disable_touch_event";
 import { resizeCanvasAsync } from "presentation/helper/resize_canvas_async";
 
-import { TouchInputLayer } from "presentation/views/touch_input_layer";
+import { TestScene } from "presentation/scenes/test_scene";
+import { ServiceLocator } from "presentation/application/service_locator";
 
 async function mainProgram() {
   const app = new Application({
@@ -21,42 +22,12 @@ async function mainProgram() {
   disableTouchEvent(app.view);
   document.body.appendChild(app.view);
 
-  const touchLayer = new TouchInputLayer();
-  touchLayer.position.set(screen.center.x, screen.center.y);
-
-  let sprite: Sprite | null = null;
-
-  // NOTE: use sprite sample.
-  const url = `${window.location.origin}/assets/images/images.json`;
-  app.loader.add(url);
-  app.loader.load(() => {
-    sprite = Sprite.from("yusha4_down_0.png");
-    sprite.x = screen.resolution.width - sprite.width;
-    app.stage.addChild(sprite);
-    app.stage.addChild(touchLayer);
-  });
-
-  const g = new Graphics();
-  g.beginFill(0xff00ff);
-  g.drawRect(0, 0, screen.resolution.width, screen.resolution.height);
-  g.endFill();
-  app.stage.addChild(g);
-
-  app.ticker.add(() => {
-    switch (touchLayer.getDirection()) {
-      case TouchInputLayer.Direction.UP:
-        sprite!.position.y -= 8;
-        break;
-      case TouchInputLayer.Direction.DOWN:
-        sprite!.position.y += 8;
-        break;
-      case TouchInputLayer.Direction.LEFT:
-        sprite!.position.x -= 8;
-        break;
-      case TouchInputLayer.Direction.RIGHT:
-        sprite!.position.x += 8;
-        break;
-    }
+  ServiceLocator.setApplication(app);
+  const scene = new TestScene();
+  scene.fetchStaticResourcesAsync().then(() => {
+    scene.initialize();
+    app.stage.addChild(scene);
+    app.ticker.add(() => scene.update());
   });
 }
 
