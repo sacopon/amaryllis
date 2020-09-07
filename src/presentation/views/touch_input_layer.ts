@@ -12,9 +12,10 @@ import { screen } from "presentation/application/config/configuration";
  */
 
 export class TouchInputLayer extends Container {
-  private isPress = false;
+  private isPressing = false;
+  private isNeutral = true;
   private pressBeginningPoint = { x: 0, y: 0 };
-  private direction = TouchInputLayer.Direction.NEUTRAL;
+  private radian = 0.0;
 
   constructor() {
     super();
@@ -35,7 +36,23 @@ export class TouchInputLayer extends Container {
    * @returns 入力されている方向
    */
   public getDirection() {
-    return this.direction;
+    if (this.isNeutral) {
+      return TouchInputLayer.Direction.NEUTRAL;
+    }
+
+    if (-Math.PI / 4 <= this.radian && this.radian < Math.PI / 4) {
+      return TouchInputLayer.Direction.RIGHT;
+    } else if (Math.PI / 4 <= this.radian && this.radian < (Math.PI * 3) / 4) {
+      return TouchInputLayer.Direction.DOWN;
+    } else if ((Math.PI * 3) / 4 <= this.radian || this.radian < (-Math.PI * 3) / 4) {
+      return TouchInputLayer.Direction.LEFT;
+    } else {
+      return TouchInputLayer.Direction.UP;
+    }
+  }
+
+  public getRadian() {
+    return this.radian;
   }
 
   private createScreenCoverGraphics() {
@@ -54,37 +71,31 @@ export class TouchInputLayer extends Container {
   }
 
   private handleDown(e: InteractionEvent) {
-    this.isPress = true;
-
-    this.pressBeginningPoint.x = e.data.global.x - this.position.x;
-    this.pressBeginningPoint.y = e.data.global.y - this.position.y;
+    this.isPressing = true;
+    this.pressBeginningPoint = e.data.getLocalPosition(this);
   }
 
   private handleUp() {
-    this.isPress = false;
+    this.isPressing = false;
     this.pressBeginningPoint = { x: 0, y: 0 };
-    this.direction = TouchInputLayer.Direction.NEUTRAL;
+    this.isNeutral = true;
   }
 
   private handleMove(e: InteractionEvent) {
-    if (!this.isPress) {
+    if (!this.isPressing) {
       return;
     }
 
-    const distanceX = e.data.global.x - this.position.x - this.pressBeginningPoint.x;
-    const distanceY = e.data.global.y - this.position.y - this.pressBeginningPoint.y;
-
-    if (Math.abs(distanceX) < Math.abs(distanceY)) {
-      this.direction = distanceY < 0 ? TouchInputLayer.Direction.UP : TouchInputLayer.Direction.DOWN;
-    } else {
-      this.direction = distanceX < 0 ? TouchInputLayer.Direction.LEFT : TouchInputLayer.Direction.RIGHT;
-    }
+    const pos = e.data.getLocalPosition(this);
+    this.radian = Math.atan2(pos.y - this.pressBeginningPoint.y, pos.x - this.pressBeginningPoint.x);
+    this.isNeutral = false;
   }
 
   private handleUpOutSide() {
-    this.isPress = false;
+    this.isPressing = false;
     this.pressBeginningPoint.x = this.pressBeginningPoint.y = 0;
-    this.direction = TouchInputLayer.Direction.NEUTRAL;
+    this.isNeutral = true;
+    this.radian = 0;
   }
 }
 

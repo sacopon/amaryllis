@@ -35,20 +35,17 @@ export class TestScene extends BaseScene {
   }
 
   public update() {
-    switch (this.touchLayer?.getDirection()) {
-      case TouchInputLayer.Direction.UP:
-        this.sprite!.y -= 8;
-        break;
-      case TouchInputLayer.Direction.DOWN:
-        this.sprite!.y += 8;
-        break;
-      case TouchInputLayer.Direction.LEFT:
-        this.sprite!.x -= 8;
-        break;
-      case TouchInputLayer.Direction.RIGHT:
-        this.sprite!.x += 8;
-        break;
+    if (!this.touchLayer) {
+      return;
     }
+
+    if (this.touchLayer.getDirection() === TouchInputLayer.Direction.NEUTRAL) {
+      return;
+    }
+
+    const rad = this.touchLayer.getRadian();
+    this.sprite!.x += Math.cos(rad) * 8;
+    this.sprite!.y += Math.sin(rad) * 8;
   }
 
   public fetchStaticResourcesAsync() {
