@@ -28,6 +28,7 @@ export class TestScene extends BaseScene {
     this.addChild(sprite);
 
     const touchLayer = new TouchInputLayer();
+    touchLayer.on("tap", () => console.log("tap"));
     this.addChild(touchLayer);
 
     this.sprite = sprite;
