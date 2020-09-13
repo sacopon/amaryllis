@@ -1,5 +1,6 @@
 import { Container, Graphics, InteractionEvent, utils } from "pixi.js";
 import { screen } from "presentation/application/config/configuration";
+import { Direction } from "presentation/application/common/constants";
 
 class DirectionInputTranslator {
   private isPressing = false;
@@ -9,17 +10,17 @@ class DirectionInputTranslator {
 
   public getDirection() {
     if (this.isNeutral) {
-      return TouchInputLayer.Direction.NEUTRAL;
+      return Direction.NEUTRAL;
     }
 
     if (-Math.PI / 4 <= this.radian && this.radian < Math.PI / 4) {
-      return TouchInputLayer.Direction.RIGHT;
+      return Direction.RIGHT;
     } else if (Math.PI / 4 <= this.radian && this.radian < (Math.PI * 3) / 4) {
-      return TouchInputLayer.Direction.DOWN;
+      return Direction.DOWN;
     } else if ((Math.PI * 3) / 4 <= this.radian || this.radian < (-Math.PI * 3) / 4) {
-      return TouchInputLayer.Direction.LEFT;
+      return Direction.LEFT;
     } else {
-      return TouchInputLayer.Direction.UP;
+      return Direction.UP;
     }
   }
 
@@ -178,15 +179,5 @@ export class TouchInputLayer extends Container {
   private handleUpOutSide() {
     this.directionInputTranslator.handleUpOutSide();
     this.tapInputTranslator.handleUpOutSide();
-  }
-}
-
-export namespace TouchInputLayer {
-  export const enum Direction {
-    NEUTRAL,
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
   }
 }

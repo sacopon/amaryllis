@@ -2,6 +2,7 @@ import { Sprite, Graphics } from "pixi.js";
 import { BaseScene } from "presentation/scenes/base_scene";
 import { screen } from "presentation/application/config/configuration";
 import { TouchInputLayer } from "presentation/views/touch_input_layer";
+import { Direction } from "presentation/application/common/constants";
 
 export class TestScene extends BaseScene {
   private state = 0;
@@ -40,7 +41,7 @@ export class TestScene extends BaseScene {
       return;
     }
 
-    if (this.touchLayer.getDirection() === TouchInputLayer.Direction.NEUTRAL) {
+    if (this.touchLayer.getDirection() === Direction.NEUTRAL) {
       return;
     }
 
