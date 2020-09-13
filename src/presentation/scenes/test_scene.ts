@@ -1,12 +1,12 @@
-import { Sprite, Graphics } from "pixi.js";
+import { Graphics, Texture } from "pixi.js";
 import { BaseScene } from "presentation/scenes/base_scene";
 import { screen } from "presentation/application/config/configuration";
 import { TouchInputLayer } from "presentation/views/touch_input_layer";
+import { CharacterView } from "presentation/views/character_view";
 import { Direction } from "presentation/application/common/constants";
 
 export class TestScene extends BaseScene {
-  private state = 0;
-  private sprite: Sprite | null = null;
+  private character: CharacterView | null = null;
   private touchLayer: TouchInputLayer | null = null;
 
   public constructor() {
@@ -25,14 +25,20 @@ export class TestScene extends BaseScene {
     g.endFill();
     this.addChild(g);
 
-    const sprite = Sprite.from("yusha4_down_0.png");
-    this.addChild(sprite);
+    const character = new CharacterView({
+      up: Texture.from("yusha4_up_0.png"),
+      down: Texture.from("yusha4_down_0.png"),
+      left: Texture.from("yusha4_left_0.png"),
+      right: Texture.from("yusha4_right_0.png"),
+    });
+    character.setDirection(Direction.NEUTRAL);
+    this.addChild(character);
 
     const touchLayer = new TouchInputLayer();
     touchLayer.on("tap", () => console.log("tap"));
     this.addChild(touchLayer);
 
-    this.sprite = sprite;
+    this.character = character;
     this.touchLayer = touchLayer;
   }
 
@@ -45,9 +51,13 @@ export class TestScene extends BaseScene {
       return;
     }
 
+    // 位置
     const rad = this.touchLayer.getRadian();
-    this.sprite!.x += Math.cos(rad) * 8;
-    this.sprite!.y += Math.sin(rad) * 8;
+    this.character!.x += Math.cos(rad) * 8;
+    this.character!.y += Math.sin(rad) * 8;
+
+    // 姿勢(アニメーション)
+    this.character!.setDirection(this.touchLayer.getDirection());
   }
 
   public fetchStaticResourcesAsync() {
