@@ -26,10 +26,10 @@ export class TestScene extends BaseScene {
     this.addChild(g);
 
     const character = new CharacterView({
-      up: Texture.from("yusha4_up_0.png"),
-      down: Texture.from("yusha4_down_0.png"),
-      left: Texture.from("yusha4_left_0.png"),
-      right: Texture.from("yusha4_right_0.png"),
+      up: [Texture.from("yusha4_up_0.png"), Texture.from("yusha4_up_1.png")],
+      down: [Texture.from("yusha4_down_0.png"), Texture.from("yusha4_down_1.png")],
+      left: [Texture.from("yusha4_left_0.png"), Texture.from("yusha4_left_1.png")],
+      right: [Texture.from("yusha4_right_0.png"), Texture.from("yusha4_right_1.png")],
     });
     character.setDirection(Direction.NEUTRAL);
     this.addChild(character);
@@ -43,6 +43,8 @@ export class TestScene extends BaseScene {
   }
 
   public update() {
+    this.character?.update();
+
     if (!this.touchLayer) {
       return;
     }
