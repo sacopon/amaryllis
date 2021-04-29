@@ -15,6 +15,7 @@ export class CharacterView extends Sprite {
   constructor(params: { up: Texture[]; down: Texture[]; left: Texture[]; right: Texture[] }) {
     super();
 
+    this.anchor.set(0.5);
     this.animationCounter = ServiceLocator.getAnimationCounterCount();
     this.allTextures[Direction.NEUTRAL] = params.down;
     this.allTextures[Direction.UP] = params.up;
