@@ -15,10 +15,10 @@ async function mainProgram() {
   });
 
   window.addEventListener("resize", () => {
-    resizeCanvasAsync(app.view);
+    resizeCanvasAsync(app.view, screen.resolution.width, screen.resolution.height);
   });
 
-  await resizeCanvasAsync(app.view);
+  await resizeCanvasAsync(app.view, screen.resolution.width, screen.resolution.height);
   disableOuterCanvasTouchEvent();
   disableTouchEvent(app.view);
   document.body.appendChild(app.view);

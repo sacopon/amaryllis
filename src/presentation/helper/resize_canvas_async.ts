@@ -1,16 +1,15 @@
-import { screen } from "presentation/application/config/configuration";
 import { getWindowSizeAsync } from "presentation/helper/get_window_size_async";
 
-export async function resizeCanvasAsync(canvas: HTMLCanvasElement) {
+export async function resizeCanvasAsync(canvas: HTMLCanvasElement, requestWidth: number, requestHeight: number) {
   const clientSize = await getWindowSizeAsync();
-  const widthRatio = clientSize.width / screen.resolution.width;
-  const heightRatio = clientSize.height / screen.resolution.height;
+  const widthRatio = clientSize.width / requestWidth;
+  const heightRatio = clientSize.height / requestHeight;
   let canvasWidth = 0;
   let canvasHeight = 0;
 
   const ratio = Math.min(widthRatio, heightRatio);
-  canvasWidth = Math.floor(screen.resolution.width * ratio);
-  canvasHeight = Math.floor(screen.resolution.height * ratio);
+  canvasWidth = Math.floor(requestWidth * ratio);
+  canvasHeight = Math.floor(requestHeight * ratio);
 
   canvas.style.width = `${canvasWidth}px`;
   canvas.style.height = `${canvasHeight}px`;
