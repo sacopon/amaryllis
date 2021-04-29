@@ -1,3 +1,7 @@
+/**
+ * 指定のDOMに対するブラウザデフォルトの挙動を無効にする
+ * @param dom 対象のDOM
+ */
 function disableTouchEvent(dom: HTMLElement) {
   const disableEventFunc = (e?: Event) => {
     if (!e) {
@@ -23,6 +27,9 @@ function disableTouchEvent(dom: HTMLElement) {
   dom.addEventListener("wheel", disableEventFunc);
 }
 
+/**
+ * キャンバス外のタッチ操作を無効にする設定を行う
+ */
 function disableOuterCanvasTouchEvent() {
   const div = window.document.createElement("div");
   div.id = "disable-outer-canvas-touch-event";

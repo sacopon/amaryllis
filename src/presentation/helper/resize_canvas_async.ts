@@ -1,5 +1,12 @@
 import { getWindowSizeAsync } from "presentation/helper/get_window_size_async";
 
+/**
+ * キャンバスを指定のアスペクト比を維持した最大サイズにリサイズする
+ *
+ * @param canvas リサイズ対象のキャンバス
+ * @param requestWidth 要求する横幅
+ * @param requestHeight 要求する縦幅
+ */
 export async function resizeCanvasAsync(canvas: HTMLCanvasElement, requestWidth: number, requestHeight: number) {
   const clientSize = await getWindowSizeAsync();
   const widthRatio = clientSize.width / requestWidth;
