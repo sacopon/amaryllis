@@ -50,6 +50,14 @@ export class FieldMap {
     this.mapData = new FieldMapData(data, width, height);
   }
 
+  public get mapWidth() {
+    return this.mapData.width;
+  }
+
+  public get mapHeight() {
+    return this.mapData.height;
+  }
+
   public getChipResource(x: number, y: number) {
     return this.chipSet.getResourceName(this.mapData.getMapChipIndex(x, y));
   }

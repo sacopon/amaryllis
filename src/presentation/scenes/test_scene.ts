@@ -6,10 +6,11 @@ import { TouchInputLayer } from "presentation/views/touch_input_layer";
 import { CharacterView } from "presentation/views/character_view";
 import { BackgroundView } from "presentation/views/bg/background_view";
 import { Direction } from "presentation/application/common/constants";
+import { FieldMapView } from "presentation/views/field_map_view";
 
 export class TestScene extends BaseScene {
   private character: CharacterView | null = null;
-  private background: BackgroundView | null = null;
+  private background: FieldMapView | null = null;
   private touchLayer: TouchInputLayer | null = null;
 
   private backgroundScrollX = 0;
@@ -31,22 +32,23 @@ export class TestScene extends BaseScene {
     g.endFill();
     this.addChild(g);
 
-    const mapData = [
-      2, 2, 2, 2, 2, 2, 2,
-      2, 1, 1, 1, 1, 1, 2,
-      2, 1, 0, 0, 0, 1, 2,
-      2, 1, 0, 3, 0, 1, 2,
-      2, 1, 0, 0, 0, 1, 2,
-      2, 1, 1, 1, 1, 1, 2,
-      2, 2, 2, 2, 2, 2, 2,
-    ];
+    // const mapData = [
+    //   2, 2, 2, 2, 2, 2, 2,
+    //   2, 1, 1, 1, 1, 1, 2,
+    //   2, 1, 0, 0, 0, 1, 2,
+    //   2, 1, 0, 3, 0, 1, 2,
+    //   2, 1, 0, 0, 0, 1, 2,
+    //   2, 1, 1, 1, 1, 1, 2,
+    //   2, 2, 2, 2, 2, 2, 2,
+    // ];
 
-    const background = new BackgroundView(
-      new BackgroundData(mapData, 80, 80, 7, 7),
-      screen.resolution.width,
-      screen.resolution.height
-    );
-    this.addChild(background);
+    // const background = new BackgroundView(
+    //   new BackgroundData(mapData, 80, 80, 7, 7),
+    //   screen.resolution.width,
+    //   screen.resolution.height
+    // );
+    const fieldMapView = new FieldMapView();
+    this.addChild(fieldMapView);
 
     const character = new CharacterView({
       up: [Texture.from("yusha4_up_0.png"), Texture.from("yusha4_up_1.png")],
@@ -62,7 +64,7 @@ export class TestScene extends BaseScene {
     this.addChild(touchLayer);
 
     this.character = character;
-    this.background = background;
+    this.background = fieldMapView;
     this.touchLayer = touchLayer;
   }
 
