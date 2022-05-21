@@ -1,27 +1,24 @@
-import { Sprite, Texture } from "pixi.js";
+import { Sprite } from "pixi.js";
 import { CharacterAnimationCounterCount } from "presentation/application/character_animation_counter";
 import { Direction } from "presentation/application/common/constants";
 import { ServiceLocator } from "presentation/application/service_locator";
+import { CharacterResourceManager } from "./character_resource_manager";
 
 export class CharacterView extends Sprite {
   private animationCounter: CharacterAnimationCounterCount;
-  private allTextures: Texture[][] = [];
   private direction: Direction = Direction.NEUTRAL;
   private isDirty: boolean = false;
+  private readonly characterId: number;
 
   private currentAnimationCount: number = 0;
   private prevAnimationCount: number = 0;
 
-  constructor(params: { up: Texture[]; down: Texture[]; left: Texture[]; right: Texture[] }) {
+  constructor(characterId: number) {
     super();
 
+    this.characterId = characterId;
     this.anchor.set(0.5);
     this.animationCounter = ServiceLocator.getAnimationCounterCount();
-    this.allTextures[Direction.NEUTRAL] = params.down;
-    this.allTextures[Direction.UP] = params.up;
-    this.allTextures[Direction.DOWN] = params.down;
-    this.allTextures[Direction.LEFT] = params.left;
-    this.allTextures[Direction.RIGHT] = params.right;
   }
 
   update() {
@@ -30,7 +27,7 @@ export class CharacterView extends Sprite {
 
     if (this.isDirty || this.prevAnimationCount !== this.currentAnimationCount) {
       this.isDirty = false;
-      const textures = this.allTextures[this.direction];
+      const textures = CharacterResourceManager.getTexture(this.characterId, this.direction);
 
       this.texture = textures[this.currentAnimationCount % textures.length];
     }

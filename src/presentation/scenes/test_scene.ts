@@ -1,8 +1,8 @@
-import { Graphics, Texture } from "pixi.js";
+import { Graphics } from "pixi.js";
 import { BaseScene } from "presentation/scenes/base_scene";
 import { screen } from "presentation/application/config/configuration";
 import { TouchInputLayer } from "presentation/views/touch_input_layer";
-import { CharacterView } from "presentation/views/character_view";
+import { CharacterView } from "presentation/views/character/character_view";
 import { Direction } from "presentation/application/common/constants";
 import { FieldMapView } from "presentation/views/field_map_view";
 
@@ -33,12 +33,7 @@ export class TestScene extends BaseScene {
     const fieldMapView = new FieldMapView();
     this.addChild(fieldMapView);
 
-    const character = new CharacterView({
-      up: [Texture.from("yusha4_up_0.png"), Texture.from("yusha4_up_1.png")],
-      down: [Texture.from("yusha4_down_0.png"), Texture.from("yusha4_down_1.png")],
-      left: [Texture.from("yusha4_left_0.png"), Texture.from("yusha4_left_1.png")],
-      right: [Texture.from("yusha4_right_0.png"), Texture.from("yusha4_right_1.png")],
-    });
+    const character = new CharacterView(0);
     character.setDirection(Direction.NEUTRAL);
     this.addChild(character);
 
