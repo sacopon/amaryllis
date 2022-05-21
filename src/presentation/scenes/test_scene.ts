@@ -72,10 +72,7 @@ export class TestScene extends BaseScene {
       `${window.location.origin}/assets/images/images.json`,
       `${window.location.origin}/assets/images/tileset.json`,
     ];
-    this._app.loader.add(urls);
 
-    return new Promise<void>((resolve) => {
-      this._app.loader.load(() => resolve());
-    });
+    return this.fetchResources(urls);
   }
 }
