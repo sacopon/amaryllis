@@ -15,6 +15,7 @@ export class FieldMapView extends Container {
     // TODO: 定義データを JSON からロードする機構
     const chipWidth = 80;
     const chipHeight = 80;
+    // prettier-ignore
     const mapData = [
       2, 2, 2, 2, 2, 2, 2,
       2, 1, 1, 1, 1, 1, 2,
@@ -35,12 +36,14 @@ export class FieldMapView extends Container {
     //////////////////////////////////////////////////////////
 
     this._fieldMap = new FieldMap(chipSet, mapData, width, height);
-    this._backgroundView = new BackgroundView(
-      new BackgroundData(mapData, chipWidth, chipHeight, this._fieldMap.mapWidth, this._fieldMap.mapHeight),
+    this._backgroundView = new BackgroundView({
+      data: new BackgroundData(mapData, this._fieldMap.mapWidth, this._fieldMap.mapHeight),
+      cellWidth: chipWidth,
+      cellHeight: chipHeight,
       chipSet,
-      screen.resolution.width,
-      screen.resolution.height
-    );
+      width: screen.resolution.width,
+      height: screen.resolution.height,
+    });
 
     this.addChild(this._backgroundView);
   }

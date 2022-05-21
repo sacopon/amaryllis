@@ -2,21 +2,13 @@
  * BG面のデータを表すクラス
  *
  * @param data マップデータ配列
- * @param cellWidth セルの幅(ピクセル単位)
- * @param cellHeight セルの高さ(ピクセル単位)
  * @param cellCountWidth マップデータの横方向の長さ(セル単位)
  * @param cellCountHeight マップデータの縦方向の長さ(セル単位)
  */
 export class BackgroundData {
   private readonly _data: number[] = [];
 
-  public constructor(
-    data: number[],
-    public readonly cellWidth: number,
-    public readonly cellHeight: number,
-    public readonly cellCountWidth: number,
-    public readonly cellCountHeight: number
-  ) {
+  public constructor(data: number[], public readonly cellCountWidth: number, public readonly cellCountHeight: number) {
     this._data = data;
   }
 
@@ -38,26 +30,6 @@ export class BackgroundData {
    */
   public normalizeY(y: number) {
     return ((y % this.cellCountHeight) + this.cellCountHeight) % this.cellCountHeight;
-  }
-
-  /**
-   * セルサイズの範囲に正規化する
-   *
-   * @param width 幅(ピクセル単位)
-   * @return 正規化された幅
-   */
-  public normalizeCellWidth(width: number) {
-    return ((width % this.cellWidth) + this.cellWidth) % this.cellWidth;
-  }
-
-  /**
-   * セルサイズの範囲に正規化する
-   * @param height 高さ(ピクセル単位)
-   *
-   * @return 正規化された高さ
-   */
-  public normalizeCellHeight(height: number) {
-    return ((height % this.cellHeight) + this.cellHeight) % this.cellHeight;
   }
 
   /**
