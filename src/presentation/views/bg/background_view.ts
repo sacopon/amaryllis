@@ -1,18 +1,27 @@
 import { Container, Graphics, Sprite, Texture } from "pixi.js";
 import { BackgroundData } from "presentation/views/bg/background_data";
+import { ChipSet } from "domain/model/fieldmap/chip_set";
 
-const tileResources = ["grass.png", "bush.png", "sandhill.png", "mountain.png"];
+interface Size {
+  xCount: number;
+  yCount: number;
+}
 
 /**
  * BG面を構成するセル
  */
 class Cell extends Sprite {
-  public constructor() {
+  private readonly _chipSet: ChipSet;
+
+  // TODO: チップセットではなく、BG面に紐づくタイル定義を別途作成する
+  // チップセットからそのタイル定義を作成して、このBG面(やセル)に設定をする
+  public constructor(chipSet: ChipSet) {
     super();
+    this._chipSet = chipSet;
   }
 
   public setTileIndex(index: number) {
-    this.texture = Texture.from(tileResources[index]);
+    this.texture = Texture.from(this._chipSet.getResourceName(index));
   }
 }
 
@@ -24,26 +33,24 @@ class Cell extends Sprite {
  */
 class Cells {
   private readonly _cells: Cell[] = [];
-  private readonly _width: number;
-  private readonly _height: number;
+  private readonly _size: Size;
 
-  constructor(width: number, height: number) {
+  constructor(chipSet: ChipSet, width: number, height: number) {
     this._cells = Array<Cell[] | null>(width * height)
       .fill(null)
-      .map(() => new Cell());
+      .map(() => new Cell(chipSet));
 
-    this._width = width;
-    this._height = height;
+    this._size = { xCount: width, yCount: height };
   }
 
   /** 横のセル数 */
   public get width() {
-    return this._width;
+    return this._size.xCount;
   }
 
   /** 縦のセル数 */
   public get height() {
-    return this._height;
+    return this._size.yCount;
   }
 
   /**
@@ -68,16 +75,29 @@ export class BackgroundView extends Container {
   private readonly _data: BackgroundData;
   private readonly _bgWidth: number;
   private readonly _bgHeight: number;
+  private readonly _cellWidth: number;
+  private readonly _cellHeight: number;
 
   private readonly _cells: Cells;
   private readonly _cellLayer: Container;
+  private readonly _chipSet: ChipSet;
 
-  public constructor(data: BackgroundData, width: number, height: number) {
+  public constructor(params: {
+    data: BackgroundData;
+    cellWidth: number;
+    cellHeight: number;
+    chipSet: ChipSet;
+    width: number;
+    height: number;
+  }) {
     super();
 
-    this._data = data;
-    this._bgWidth = width;
-    this._bgHeight = height;
+    this._data = params.data;
+    this._bgWidth = params.width;
+    this._bgHeight = params.height;
+    this._chipSet = params.chipSet;
+    this._cellWidth = params.cellWidth;
+    this._cellHeight = params.cellHeight;
 
     // BG面の大きさでマスクをかけるため、セルの乗るレイヤーは別に用意する
     // (セルのレイヤーとマスクレイヤーが兄弟となる)
@@ -86,13 +106,14 @@ export class BackgroundView extends Container {
 
     // スクロールの分として1セル多く作成する
     this._cells = new Cells(
-      Math.floor((width + this._data.cellWidth) / this._data.cellWidth),
-      Math.floor((height + this._data.cellHeight) / this._data.cellHeight)
+      this._chipSet,
+      Math.floor((params.width + this._cellWidth) / this._cellWidth),
+      Math.floor((params.height + this._cellHeight) / this._cellHeight)
     );
 
     const offset = {
-      x: -Math.floor(width / 2),
-      y: -Math.floor(height / 2),
+      x: -Math.floor(params.width / 2),
+      y: -Math.floor(params.height / 2),
     };
 
     this.setupCells(offset.x, offset.y);
@@ -107,8 +128,8 @@ export class BackgroundView extends Container {
    * @param y マップデータ内の左上開始点(ピクセル単位)
    */
   public setScrollPosition(x: number, y: number) {
-    this.setOrigin(Math.floor(x / this._data.cellWidth), Math.floor(y / this._data.cellHeight));
-    this._cellLayer.position.set(-this._data.normalizeCellWidth(x), -this._data.normalizeCellHeight(y));
+    this.setOrigin(Math.floor(x / this._cellWidth), Math.floor(y / this._cellHeight));
+    this._cellLayer.position.set(-this.normalizeCellWidth(x), -this.normalizeCellHeight(y));
   }
 
   /**
@@ -120,14 +141,14 @@ export class BackgroundView extends Container {
     for (let y = 0; y < this._cells.height; ++y) {
       for (let x = 0; x < this._cells.width; ++x) {
         const tile = this._cells.getCell(x, y);
-        tile.position.set(x * this._data.cellWidth + offsetX, y * this._data.cellHeight + offsetY);
+        tile.position.set(x * this._cellWidth + offsetX, y * this._cellHeight + offsetY);
         this._cellLayer.addChild(tile);
       }
     }
   }
 
   /**
-   * BGデータ内のどの位置から表示を開始するか
+   * BGデータ内の表示開始位置(セル単位のX,Y)を設定する
    *
    * @param originX 開始点(左上)の横方向の位置(セル単位)
    * @param originY 開始点(左上)の縦方向の位置(セル単位)
@@ -140,6 +161,26 @@ export class BackgroundView extends Container {
         tile.setTileIndex(this._data.getIndex(originX + x, originY + y));
       }
     }
+  }
+
+  /**
+   * セルサイズの範囲に正規化する
+   *
+   * @param width 幅(ピクセル単位)
+   * @return 正規化された幅
+   */
+  private normalizeCellWidth(width: number) {
+    return ((width % this._cellWidth) + this._cellWidth) % this._cellWidth;
+  }
+
+  /**
+   * セルサイズの範囲に正規化する
+   * @param height 高さ(ピクセル単位)
+   *
+   * @return 正規化された高さ
+   */
+  private normalizeCellHeight(height: number) {
+    return ((height % this._cellHeight) + this._cellHeight) % this._cellHeight;
   }
 
   /**

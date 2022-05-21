@@ -26,6 +26,14 @@ export class BaseScene extends Container implements Scene {
     return Promise.resolve();
   }
 
+  protected fetchResources(urls: string[]) {
+    this._app.loader.add(urls);
+
+    return new Promise<void>((resolve) => {
+      this._app.loader.load(() => resolve());
+    });
+  }
+
   /**
    * @protected
    */
